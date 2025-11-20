@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A4 Gráfica – Cargar Archivos</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .box {
+      max-width: 500px;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      margin: auto;
+      box-shadow: 0 0 10px #0002;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    button {
+      background: black;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+
+    button:hover {
+      background: #333;
+    }
+
+    #precio {
+      font-weight: bold;
+      margin-top: 10px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>A4 Gráfica – Cargar archivos e imprimir</h1>
+
+  <div class="box">
+
+    <label><b>Seleccionar archivos</b></label>
+    <input type="file" id="files" multiple />
+
+    <label><b>Tipo de impresión</b></label>
+    <select id="tipo">
+      <option value="200">A4 Texto Negro — $200</option>
+      <option value="300">A4 Full Color / ByN — $300</option>
+    </select>
+
+    <p id="precio">Total: $0</p>
+
+    <button onclick="iniciarProceso()">Continuar y pagar</button>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
