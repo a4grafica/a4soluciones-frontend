@@ -2,7 +2,10 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const router = require("./routes");
+<<<<<<< HEAD
 const upload = require("./middlewares/multerConfig");  // <--- AGREGAR ESTO
+=======
+>>>>>>> 3fae722c92aa0394740c682daa117078a674e8d7
 
 const app = express();
 
