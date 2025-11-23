@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const upload = require('../middlewares/multerConfig');
+const upload = require('../middlewares/multerConfig.js'); // ¡SOLUCIÓN: Agregar .js!
 const uploadCtrl = require("./controllers/uploadController");
 const jobsCtrl = require("./controllers/jobsController");
 const mpWebhookCtrl = require("./controllers/mpWebhookController");
