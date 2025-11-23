@@ -17,80 +17,87 @@ fileInput.addEventListener("change", calcular);
 tipo.addEventListener("change", calcular);
 
 function calcular() {
-  const cantidad = fileInput.files.length;
-  const valor = Number(tipo.value);
+    const cantidad = fileInput.files.length;
+    const valor = Number(tipo.value);
 
-  precioActual = cantidad * valor;
+    precioActual = cantidad * valor;
 
-  precio.innerText = `Total: $${precioActual}`;
+    precio.innerText = `Total: $${precioActual}`;
 }
 
 // ------------------------------
 // SUBIR ARCHIVOS
 // ------------------------------
 async function uploadFiles(ref, files) {
-  const formData = new FormData();
+    const formData = new FormData();
 
-  for (const f of files) {
-    formData.append("files", f);
-  }
-  
-  const r = await fetch(`${API_URL}/upload/${ref}`, {
-    method: "POST",
-    body: formData,
-  });
+    for (const f of files) {
+        formData.append("files", f);
+    }
+    
+    const r = await fetch(`${API_URL}/upload/${ref}`, {
+        method: "POST",
+        body: formData,
+    });
 
-  return await r.json();
+    return await r.json();
 }
 
 // ------------------------------
 // CREAR ORDEN MERCADOPAGO
 // ------------------------------
 async function createOrder(amount, description) {
-  const r = await fetch(`${API_URL}/create_order`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ amount, description }),
-  });
+    const r = await fetch(`${API_URL}/create_order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount, description }),
+    });
 
-  return await r.json();
+    return await r.json();
 }
 
 // ------------------------------
 // INICIAR PROCESO DE PAGO
 // ------------------------------
 async function iniciarProceso() {
-  const files = fileInput.files;
+    const files = fileInput.files;
 
-  if (files.length === 0) {
-    alert("Seleccioná al menos un archivo.");
-    return;
-  }
+    if (files.length === 0) {
+        alert("Seleccioná al menos un archivo.");
+        return;
+    }
 
-  // Asegurar que el precio se calcule antes de continuar
-  calcular(); 
+    // Asegurar que el precio se calcule antes de continuar
+    calcular(); 
 
-  if (precioActual === 0) {
-    alert("Seleccioná tipo de impresión.");
-    return;
-  }
+    if (precioActual === 0) {
+        alert("Seleccioná tipo de impresión.");
+        return;
+    }
 
-  const ref = "A4-" + Date.now();
-  const description = `Pedido de impresión ${ref}`;
+    const ref = "A4-" + Date.now();
+    const description = `Pedido de impresión ${ref}`;
 
-  // 1) SUBIR ARCHIVOS (Llama a la API de Render)
-  await uploadFiles(ref, files);
+    try {
+        // 1) SUBIR ARCHIVOS (Llama a la API de Render)
+        await uploadFiles(ref, files);
 
-  // 2) CREAR ORDEN (Llama a la API de Render)
-  const data = await createOrder(precioActual, description);
+        // 2) CREAR ORDEN (Llama a la API de Render)
+        const data = await createOrder(precioActual, description);
 
-  if (!data.init_point) {
-    alert("Error creando la orden.");
-    return;
-  }
+        // CORRECCIÓN FINAL: Esperamos 'url' que es la propiedad que envía el backend
+        if (!data.url) { 
+            alert("Error creando la orden: No se recibió URL de pago.");
+            return;
+        }
 
-  // 3) REDIRIGIR A MERCADOPAGO
-  window.location.href = data.init_point;
+        // 3) REDIRIGIR A MERCADOPAGO
+        window.location.href = data.url; 
+
+    } catch (error) {
+        console.error("Error fatal en el proceso de pago:", error);
+        alert("Ocurrió un error inesperado. Intentalo de nuevo más tarde.");
+    }
 }
 
 // Hacer visible la función en el HTML (para que el botón funcione)
